@@ -1,19 +1,21 @@
 
 package com.javaproject.qeats.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+//import jakarta.persistence.Entity;
+//import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-//@Document(collection = "items")
+@Document(collection = "items")
 @NoArgsConstructor
-@Entity
+//@Entity
 public class ItemEntity {
 
   @Id

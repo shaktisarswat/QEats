@@ -20,6 +20,7 @@ import com.javaproject.qeats.utils.GeoLocation;
 import com.javaproject.qeats.utils.GeoUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
@@ -33,13 +34,17 @@ import java.util.Optional;
 @Service
 public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryService {
 
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     RestaurantRepository restaurantRepository;
+
     @Autowired
     private RedisConfiguration redisConfiguration;
-    @Autowired
-    private ModelMapper modelMapper;
 
     private boolean isOpenNow(LocalTime time, RestaurantEntity res) {
         LocalTime openingTime = LocalTime.parse(res.getOpensAt());

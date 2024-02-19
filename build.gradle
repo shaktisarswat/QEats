@@ -22,10 +22,17 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	// https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api
 	implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.1.0-M1'
-//	// https://mvnrepository.com/artifact/org.springframework.data/spring-data-mongodb
-//	implementation group: 'org.springframework.data', name: 'spring-data-mongodb', version: '4.2.3'
-	// https://mvnrepository.com/artifact/org.springframework.data/spring-data-commons
-	implementation group: 'org.springframework.data', name: 'spring-data-commons', version: '3.2.3'
+// https://mvnrepository.com/artifact/org.springframework.data/spring-data-mongodb
+	implementation group: 'org.springframework.data', name: 'spring-data-mongodb', version: '4.2.3'
+
+// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
+	implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.11.1'
+
+
+
+
+//	// https://mvnrepository.com/artifact/org.springframework.data/spring-data-commons
+//	implementation group: 'org.springframework.data', name: 'spring-data-commons', version: '3.2.3'
 	// https://mvnrepository.com/artifact/org.projectlombok/lombok
 	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
 	implementation group: "com.google.guava", name: "guava", version: "20.0"
@@ -42,11 +49,11 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/ch.hsr/geohash
 	implementation group: 'ch.hsr', name: 'geohash', version: '1.4.0'
-	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
-	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '3.2.2'
-
-	// https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
-	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.3.0'
+//	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
+//	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '3.2.2'
+//
+//	// https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
+//	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.3.0'
 
 
 }
