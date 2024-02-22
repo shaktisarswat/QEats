@@ -1,13 +1,5 @@
-/*
- *
- *  * Copyright (c) Crio.Do 2019. All rights reserved
- *
- */
-
 package com.javaproject.qeats.models;
 
-//import jakarta.persistence.Entity;
-//import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,7 +9,6 @@ import java.util.List;
 
 // Java class that maps to Mongo collection.
 @Document(collection = "restaurants")
-//@Entity
 public class RestaurantEntity {
 
     @Id

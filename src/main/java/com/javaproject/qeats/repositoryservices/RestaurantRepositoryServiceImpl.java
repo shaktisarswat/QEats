@@ -129,7 +129,7 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
     public List<Restaurant> findRestaurantsByName(Double latitude, Double longitude,
                                                   String searchString, LocalTime currentTime, Double servingRadiusInKms) {
         Optional<List<RestaurantEntity>> restaurantEntities =
-                restaurantRepository.findByName(searchString);
+                restaurantRepository.findRestaurantsByNameExact(searchString);
         List<Restaurant> restaurants = new ArrayList<Restaurant>();
         if (restaurantEntities.get() != null) {
             for (RestaurantEntity restaurantEntity : restaurantEntities.get()) {

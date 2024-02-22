@@ -22,13 +22,9 @@ public class GetRestaurantsRequest {
     private Double longitude;
     private String searchFor;
 
-    public GetRestaurantsRequest(@NotNull @Min(-90) @Max(90) Double latitude,
-                                 @NotNull @Min(-180) @Max(180) Double longitude) {
+    public GetRestaurantsRequest(Double latitude, Double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
-    }
-
-    public GetRestaurantsRequest() {
     }
 
     public Double getLatitude() {

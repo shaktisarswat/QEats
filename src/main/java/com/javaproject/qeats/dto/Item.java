@@ -1,10 +1,3 @@
-
-/*
- *
- *  * Copyright (c) Crio.Do 2019. All rights reserved
- *
- */
-
 package com.javaproject.qeats.dto;
 
 import jakarta.validation.constraints.NotNull;

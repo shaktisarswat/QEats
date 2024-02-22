@@ -1,8 +1,3 @@
-
-/*
- * Copyright (c) Crio.Do 2019. All rights reserved
- */
-
 package com.javaproject.qeats.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

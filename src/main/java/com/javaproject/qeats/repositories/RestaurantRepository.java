@@ -1,9 +1,3 @@
-/*
- *
- *  * Copyright (c) Crio.Do 2019. All rights reserved
- *
- */
-
 package com.javaproject.qeats.repositories;
 
 import com.javaproject.qeats.models.RestaurantEntity;
@@ -18,6 +12,6 @@ import java.util.Optional;
 public interface RestaurantRepository extends MongoRepository<RestaurantEntity, String> {
 
     @Query("{ 'name' : ?0 }")
-    Optional<List<RestaurantEntity>> findByName(String name);
+    Optional<List<RestaurantEntity>> findRestaurantsByNameExact(String name);
 }
 

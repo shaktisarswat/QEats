@@ -1,9 +1,3 @@
-/*
- *
- *  * Copyright (c) Crio.Do 2019. All rights reserved
- *
- */
-
 package com.javaproject.qeats.exchanges;
 
 import java.util.List;

@@ -1,7 +1,13 @@
-package com.javaproject.qeats.utils;
+
+/*
+ *
+ *  * Copyright (c) Crio.Do 2019. All rights reserved
+ *
+ */
+
+package com.crio.qeats.utils;
 
 import com.google.common.io.Resources;
-
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
