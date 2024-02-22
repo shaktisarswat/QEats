@@ -1,18 +1,23 @@
 package com.javaproject.qeats.controller;
 
 
+import com.javaproject.qeats.exchanges.GetMenuResponse;
 import com.javaproject.qeats.exchanges.GetRestaurantsRequest;
 import com.javaproject.qeats.exchanges.GetRestaurantsResponse;
+import com.javaproject.qeats.services.MenuService;
 import com.javaproject.qeats.services.RestaurantService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalTime;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(RestaurantController.RESTAURANT_API_ENDPOINT)
@@ -31,6 +36,9 @@ public class RestaurantController {
     @Autowired
     private RestaurantService restaurantService;
 
+    @Autowired
+    private MenuService menuService;
+
 
     @GetMapping(RESTAURANTS_API)
     public ResponseEntity<GetRestaurantsResponse> getRestaurants(@Valid GetRestaurantsRequest getRestaurantsRequest) {
@@ -46,6 +54,21 @@ public class RestaurantController {
         }
         System.out.println("getRestaurants returned with {}" + getRestaurantsRequest);
         return ResponseEntity.ok().body(getRestaurantsResponse);
+    }
+
+    @GetMapping(MENU_API)
+    public ResponseEntity<GetMenuResponse> getMenu(@RequestParam("restaurantId") Optional<String> restaurantId) {
+
+        if (!restaurantId.isPresent() || StringUtils.isEmpty(restaurantId.get())) {
+            return ResponseEntity.badRequest().build();
+        }
+        GetMenuResponse getMenuResponse = menuService.findMenu(restaurantId.get());
+
+        if (getMenuResponse == null || getMenuResponse.getMenu() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok().body(getMenuResponse);
     }
 }
 

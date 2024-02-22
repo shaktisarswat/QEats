@@ -1,35 +1,26 @@
-package com.javaproject.qeats.models;
+package com.javaproject.qeats.dto;
 
-
-import com.javaproject.qeats.dto.Item;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Document(collection = "menus")
-public class MenuEntity {
-    @Id
-    private String id;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Menu {
+
     @NotNull
     private String restaurantId;
+
     @NotNull
     private List<Item> items = new ArrayList();
 
-    public MenuEntity(String id, String restaurantId, List<Item> items) {
-        this.id = id;
+    public Menu(String restaurantId, List<Item> items) {
         this.restaurantId = restaurantId;
         this.items = items;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public Menu() {
     }
 
     public String getRestaurantId() {
