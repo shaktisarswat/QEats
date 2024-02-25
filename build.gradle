@@ -1,57 +1,55 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.2.2'
-	id 'io.spring.dependency-management' version '1.1.4'
+    id 'java'
+    id 'org.springframework.boot' version '3.2.2'
+    id 'io.spring.dependency-management' version '1.1.4'
 }
 
 group = 'com.javaproject'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '17'
+    sourceCompatibility = '17'
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.jetbrains:annotations:23.0.0'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	// https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api
-	implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.1.0-M1'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.jetbrains:annotations:23.0.0'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api
+    implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.1.0-M1'
 // https://mvnrepository.com/artifact/org.springframework.data/spring-data-mongodb
-	implementation group: 'org.springframework.data', name: 'spring-data-mongodb', version: '4.2.3'
+    implementation group: 'org.springframework.data', name: 'spring-data-mongodb', version: '4.2.3'
 
 // https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
-	implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.11.1'
+    implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.11.1'
 
-	// https://mvnrepository.com/artifact/it.ozimov/embedded-redis
-	testImplementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.1'
+    // https://mvnrepository.com/artifact/it.ozimov/embedded-redis
+    testImplementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.1'
 
-	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
-	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '3.2.2'
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '3.2.2'
 
 //	// https://mvnrepository.com/artifact/org.springframework.data/spring-data-commons
 //	implementation group: 'org.springframework.data', name: 'spring-data-commons', version: '3.2.3'
-	// https://mvnrepository.com/artifact/org.projectlombok/lombok
-	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
-	implementation group: "com.google.guava", name: "guava", version: "20.0"
-	// https://mvnrepository.com/artifact/org.modelmapper/modelmapper
-	implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.2.0'
-	// TODO: CRIO_TASK_MODULE_REDIS
-	// Objective:
-	// Add required the libraries for:
-	// 1. Jedis - A Java based Redis client (https://github.com/xetorthio/jedis)
-	// 2. Geohash (Use https://github.com/kungfoo/geohash-java)
+    implementation group: "com.google.guava", name: "guava", version: "20.0"
+    // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+    implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.2.0'
+    // TODO: CRIO_TASK_MODULE_REDIS
+    // Objective:
+    // Add required the libraries for:
+    // 1. Jedis - A Java based Redis client (https://github.com/xetorthio/jedis)
+    // 2. Geohash (Use https://github.com/kungfoo/geohash-java)
 
-	// https://mvnrepository.com/artifact/redis.clients/jedis
-	implementation 'redis.clients:jedis:3.7.0'
+    // https://mvnrepository.com/artifact/redis.clients/jedis
+    implementation 'redis.clients:jedis:3.7.0'
 
-	// https://mvnrepository.com/artifact/ch.hsr/geohash
-	implementation group: 'ch.hsr', name: 'geohash', version: '1.4.0'
+    // https://mvnrepository.com/artifact/ch.hsr/geohash
+    implementation group: 'ch.hsr', name: 'geohash', version: '1.4.0'
 //	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
 //	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '3.2.2'
 //
@@ -62,5 +60,5 @@ dependencies {
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }

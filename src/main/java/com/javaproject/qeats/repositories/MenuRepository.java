@@ -8,7 +8,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MenuRepository extends MongoRepository<MenuEntity, String> {
-
-  @Query("{\"restaurantId\": \"11\"}")
   Optional<MenuEntity> findMenuByRestaurantId(String restaurantId);
 }

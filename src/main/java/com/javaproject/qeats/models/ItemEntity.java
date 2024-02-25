@@ -1,17 +1,13 @@
 package com.javaproject.qeats.models;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @Document(collection = "items")
-@NoArgsConstructor
 public class ItemEntity {
 
     @Id

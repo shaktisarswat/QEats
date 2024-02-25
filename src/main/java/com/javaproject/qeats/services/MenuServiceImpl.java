@@ -3,6 +3,7 @@ package com.javaproject.qeats.services;
 
 import com.javaproject.qeats.dto.Item;
 import com.javaproject.qeats.dto.Menu;
+import com.javaproject.qeats.exceptions.ItemNotFoundInRestaurantMenuException;
 import com.javaproject.qeats.exchanges.GetMenuResponse;
 import com.javaproject.qeats.repositoryservices.MenuRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public Item findItem(String itemId, String restaurantId) {
+    public Item findItem(String itemId, String restaurantId) throws ItemNotFoundInRestaurantMenuException {
         Menu menu = menuRepositoryService.findMenu(restaurantId);
         if (menu != null) {
             for (Item item : menu.getItems()) {
@@ -29,6 +30,6 @@ public class MenuServiceImpl implements MenuService {
                 }
             }
         }
-        return new Item();
+        throw new ItemNotFoundInRestaurantMenuException("Item not found for given ItemId");
     }
 }

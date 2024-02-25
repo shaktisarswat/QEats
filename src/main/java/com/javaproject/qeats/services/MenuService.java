@@ -1,6 +1,7 @@
 package com.javaproject.qeats.services;
 
 import com.javaproject.qeats.dto.Item;
+import com.javaproject.qeats.exceptions.ItemNotFoundInRestaurantMenuException;
 import com.javaproject.qeats.exchanges.GetMenuResponse;
 
 public interface MenuService {
@@ -19,5 +20,5 @@ public interface MenuService {
      * @return item if found
      * @exception ItemNotFoundInRestaurantMenuException if the item is not found
      */
-    Item findItem(String itemId, String restaurantId);
+    Item findItem(String itemId, String restaurantId) throws ItemNotFoundInRestaurantMenuException;
 }
