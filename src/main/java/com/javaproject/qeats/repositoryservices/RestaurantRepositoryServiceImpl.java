@@ -15,6 +15,7 @@ import com.javaproject.qeats.configs.RedisConfiguration;
 import com.javaproject.qeats.dto.Restaurant;
 import com.javaproject.qeats.globals.GlobalConstants;
 import com.javaproject.qeats.models.RestaurantEntity;
+import com.javaproject.qeats.repositories.MenuRepository;
 import com.javaproject.qeats.repositories.RestaurantRepository;
 import com.javaproject.qeats.utils.GeoLocation;
 import com.javaproject.qeats.utils.GeoUtils;
@@ -35,16 +36,16 @@ import java.util.Optional;
 public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryService {
 
     @Autowired
+    RestaurantRepository restaurantRepository;
+    @Autowired
     private ModelMapper modelMapper;
-
     @Autowired
     private MongoTemplate mongoTemplate;
-
-    @Autowired
-    RestaurantRepository restaurantRepository;
-
     @Autowired
     private RedisConfiguration redisConfiguration;
+
+    @Autowired
+    private MenuRepository menuRepository;
 
     private boolean isOpenNow(LocalTime time, RestaurantEntity res) {
         LocalTime openingTime = LocalTime.parse(res.getOpensAt());
@@ -130,7 +131,7 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
                                                   String searchString, LocalTime currentTime, Double servingRadiusInKms) {
         Optional<List<RestaurantEntity>> restaurantEntities =
                 restaurantRepository.findRestaurantsByNameExact(searchString);
-        List<Restaurant> restaurants = new ArrayList<Restaurant>();
+        List<Restaurant> restaurants = new ArrayList<>();
         if (restaurantEntities.get() != null) {
             for (RestaurantEntity restaurantEntity : restaurantEntities.get()) {
                 if (isRestaurantCloseByAndOpen(restaurantEntity, currentTime, latitude, longitude,
@@ -150,8 +151,19 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
     public List<Restaurant> findRestaurantsByAttributes(Double latitude, Double longitude,
                                                         String searchString, LocalTime currentTime, Double servingRadiusInKms) {
 
+        Optional<List<RestaurantEntity>> restaurantEntities =
+                restaurantRepository.findRestaurantsByAttribute(searchString);
 
-        return null;
+        List<Restaurant> restaurants = new ArrayList<>();
+        if (restaurantEntities.get() != null) {
+            for (RestaurantEntity restaurantEntity : restaurantEntities.get()) {
+                if (isRestaurantCloseByAndOpen(restaurantEntity, currentTime, latitude, longitude,
+                        servingRadiusInKms)) {
+                    restaurants.add(modelMapper.map(restaurantEntity, Restaurant.class));
+                }
+            }
+        }
+        return restaurants;
     }
 
 
@@ -161,10 +173,23 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
 
     @Override
     public List<Restaurant> findRestaurantsByItemName(Double latitude, Double longitude,
-                                                      String searchString, LocalTime currentTime, Double servingRadiusInKms) {
-
-
-        return null;
+                                                      String searchString, LocalTime currentTime,
+                                                      Double servingRadiusInKms) {
+        Optional<List<RestaurantEntity>> restaurantIds =
+                menuRepository.findRestaurantsByItemName(searchString);
+        List<Restaurant> restaurants = new ArrayList<>();
+        if (restaurantIds.isPresent()) {
+            for (RestaurantEntity id : restaurantIds.get()) {
+                Optional<RestaurantEntity> restaurant = restaurantRepository.findRestaurantsByRestaurantId(id.getRestaurantId());
+                if (restaurant.isPresent()) {
+                    if (isRestaurantCloseByAndOpen(restaurant.get(), currentTime, latitude, longitude,
+                            servingRadiusInKms)) {
+                        restaurants.add(modelMapper.map(restaurant.get(), Restaurant.class));
+                    }
+                }
+            }
+        }
+        return restaurants;
     }
 
     // Objective:
@@ -172,8 +197,21 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
     @Override
     public List<Restaurant> findRestaurantsByItemAttributes(Double latitude, Double longitude,
                                                             String searchString, LocalTime currentTime, Double servingRadiusInKms) {
-
-        return null;
+        Optional<List<RestaurantEntity>> restaurantIds =
+                menuRepository.findRestaurantIdsByItemAttributes(searchString);
+        List<Restaurant> restaurants = new ArrayList<>();
+        if (restaurantIds.isPresent()) {
+            for (RestaurantEntity id : restaurantIds.get()) {
+                Optional<RestaurantEntity> restaurant = restaurantRepository.findRestaurantsByRestaurantId(id.getRestaurantId());
+                if (restaurant.isPresent()) {
+                    if (isRestaurantCloseByAndOpen(restaurant.get(), currentTime, latitude, longitude,
+                            servingRadiusInKms)) {
+                        restaurants.add(modelMapper.map(restaurant.get(), Restaurant.class));
+                    }
+                }
+            }
+        }
+        return restaurants;
     }
 
 

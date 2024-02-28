@@ -13,5 +13,12 @@ public interface RestaurantRepository extends MongoRepository<RestaurantEntity, 
 
     @Query("{ 'name' : ?0 }")
     Optional<List<RestaurantEntity>> findRestaurantsByNameExact(String name);
+
+    @Query("{'attributes': ?0}")
+    Optional<List<RestaurantEntity>> findRestaurantsByAttribute(String attribute);
+
+    Optional<RestaurantEntity> findRestaurantsByRestaurantId(String restaurantId);
 }
+
+
 
