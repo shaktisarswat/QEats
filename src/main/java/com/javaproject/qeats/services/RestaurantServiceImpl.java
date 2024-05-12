@@ -5,11 +5,14 @@ import com.javaproject.qeats.exchanges.GetRestaurantsRequest;
 import com.javaproject.qeats.exchanges.GetRestaurantsResponse;
 import com.javaproject.qeats.repositoryservices.RestaurantRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class RestaurantServiceImpl implements RestaurantService {
@@ -21,8 +24,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 
     @Override
-    public GetRestaurantsResponse findAllRestaurantsCloseBy(
-            GetRestaurantsRequest getRestaurantsRequest, LocalTime currentTime) {
+    public GetRestaurantsResponse findAllRestaurantsCloseBy(GetRestaurantsRequest getRestaurantsRequest, LocalTime currentTime) {
 
         // For peak hours: 8AM - 10AM, 1PM-2PM, 7PM-9PM service radius is 3KMs.
         // All other times, serving radius is 5KMs.
@@ -30,15 +32,12 @@ public class RestaurantServiceImpl implements RestaurantService {
         int h = currentTime.getHour();
         int m = currentTime.getMinute();
 
-        if ((h >= 8 && h <= 9) || (h == 10 && m == 0) || (h == 13) || (h == 14 && m == 0)
-                || (h >= 19 && h <= 20) || (h == 21 && m == 0)) {
-            restaurant =
-                    restaurantRepositoryService.findAllRestaurantsCloseBy(getRestaurantsRequest.getLatitude(),
-                            getRestaurantsRequest.getLongitude(), currentTime, peakHoursServingRadiusInKms);
+        if ((h >= 8 && h <= 9) || (h == 10 && m == 0) || (h == 13) || (h == 14 && m == 0) || (h >= 19 && h <= 20) || (h == 21 && m == 0)) {
+            restaurant = restaurantRepositoryService.findAllRestaurantsCloseBy(getRestaurantsRequest.getLatitude(),
+                    getRestaurantsRequest.getLongitude(), currentTime, peakHoursServingRadiusInKms);
         } else {
-            restaurant =
-                    restaurantRepositoryService.findAllRestaurantsCloseBy(getRestaurantsRequest.getLatitude(),
-                            getRestaurantsRequest.getLongitude(), currentTime, normalHoursServingRadiusInKms);
+            restaurant = restaurantRepositoryService.findAllRestaurantsCloseBy(getRestaurantsRequest.getLatitude(),
+                    getRestaurantsRequest.getLongitude(), currentTime, normalHoursServingRadiusInKms);
         }
 
         for (Restaurant res : restaurant) {
@@ -81,71 +80,74 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 
         // Restaurants by Name
-        List<Restaurant> completableFuture1 =
-                getRestaurantsByName(currentTime, latitude, longitude, searchQuery,
-                        finalServingRadiusInKms);
+        List<Restaurant> restaurantsByName =
+                restaurantRepositoryService
+                        .findRestaurantsByName(latitude, longitude,
+                                searchQuery, currentTime, finalServingRadiusInKms);
 
         // Restaurants by Cuisines (Attributes)
-        List<Restaurant> completableFuture2 =
-                getRestaurantsByAttributes(currentTime, latitude, longitude, searchQuery,
-                        finalServingRadiusInKms);
+        List<Restaurant> restaurantsByAttributes =
+                restaurantRepositoryService
+                        .findRestaurantsByAttributes(latitude, longitude, searchQuery,
+                                currentTime, finalServingRadiusInKms);
 
         // Restaurants by Food Item
-        List<Restaurant> completableFuture3 =
-                getRestaurantsByItemName(currentTime, latitude, longitude, searchQuery,
-                        finalServingRadiusInKms);
+        List<Restaurant> restaurantsByItemName =
+                restaurantRepositoryService
+                        .findRestaurantsByItemName(latitude, longitude,
+                                searchQuery, currentTime, finalServingRadiusInKms);
 
         // Restaurants by Food Item Attributes
-        List<Restaurant> completableFuture4 =
-                getRestaurantsByItemAttributes(currentTime, latitude, longitude, searchQuery,
-                        finalServingRadiusInKms);
+        List<Restaurant> restaurantsByItemAttributes =
+                restaurantRepositoryService
+                        .findRestaurantsByItemAttributes(latitude, longitude, searchQuery, currentTime,
+                                finalServingRadiusInKms);
 
-        restaurants.addAll(completableFuture1);
-        restaurants.addAll(completableFuture2);
-        restaurants.addAll(completableFuture3);
-        restaurants.addAll(completableFuture4);
+        restaurants.addAll(restaurantsByName);
+        restaurants.addAll(restaurantsByAttributes);
+        restaurants.addAll(restaurantsByItemName);
+        restaurants.addAll(restaurantsByItemAttributes);
 
         for (Restaurant res : restaurants) {
             String sanitizedName = res.getName().replaceAll("[Â©éí]", "e");
             res.setName(sanitizedName);
         }
-
-        // restaurants.forEach(restaurant -> {
-        //   restaurant.setName(StringUtils.stripAccents(restaurant.getName()));
-        // });
         return new GetRestaurantsResponse(restaurants);
     }
 
-    private List<Restaurant> getRestaurantsByItemAttributes(
-            LocalTime currentTime, Double latitude, Double longitude, String searchQuery,
-            Double finalServingRadiusInKms) {
-        return restaurantRepositoryService
+
+
+    @Async
+    private CompletableFuture<List<Restaurant>> getRestaurantsByItemAttributes(
+            LocalTime currentTime, Double latitude, Double longitude,
+             String searchQuery, Double finalServingRadiusInKms) {
+        return CompletableFuture.completedFuture(restaurantRepositoryService
                 .findRestaurantsByItemAttributes(latitude, longitude, searchQuery, currentTime,
-                        finalServingRadiusInKms);
+                        finalServingRadiusInKms));
     }
 
-    private List<Restaurant> getRestaurantsByItemName(
+    @Async
+    private CompletableFuture<List<Restaurant>> getRestaurantsByItemName(
             LocalTime currentTime, Double latitude, Double longitude, String searchQuery,
             Double finalServingRadiusInKms) {
-        return restaurantRepositoryService
-                .findRestaurantsByItemName(latitude, longitude, searchQuery, currentTime,
-                        finalServingRadiusInKms);
+        return CompletableFuture.completedFuture(restaurantRepositoryService
+                .findRestaurantsByItemName(latitude, longitude, searchQuery, currentTime, finalServingRadiusInKms));
     }
 
-    private List<Restaurant> getRestaurantsByAttributes(
-            LocalTime currentTime, Double latitude, Double longitude, String searchQuery,
-            Double finalServingRadiusInKms) {
-        return restaurantRepositoryService
-                .findRestaurantsByAttributes(latitude, longitude, searchQuery, currentTime,
-                        finalServingRadiusInKms);
+    @Async
+    private CompletableFuture<List<Restaurant>> getRestaurantsByAttributes(
+            LocalTime currentTime, Double latitude, Double longitude,
+            String searchQuery, Double finalServingRadiusInKms) {
+        return CompletableFuture.completedFuture(restaurantRepositoryService
+                .findRestaurantsByAttributes(latitude, longitude, searchQuery, currentTime, finalServingRadiusInKms));
     }
 
-    private List<Restaurant> getRestaurantsByName(
-            LocalTime currentTime, Double latitude, Double longitude, String searchQuery,
-            Double finalServingRadiusInKms) {
-        return restaurantRepositoryService
-                .findRestaurantsByName(latitude, longitude, searchQuery, currentTime,
-                        finalServingRadiusInKms);
+    @Async
+    private CompletableFuture<List<Restaurant>> getRestaurantsByName(
+            LocalTime currentTime, Double latitude, Double longitude,
+            String searchQuery, Double finalServingRadiusInKms) {
+        return CompletableFuture.completedFuture(restaurantRepositoryService
+                .findRestaurantsByName(latitude, longitude, searchQuery, currentTime, finalServingRadiusInKms));
     }
 
 
@@ -159,16 +161,14 @@ public class RestaurantServiceImpl implements RestaurantService {
         LocalTime s3 = LocalTime.of(19, 0);
         LocalTime e3 = LocalTime.of(21, 0);
 
-        return (currentTime.isAfter(s1) && currentTime.isBefore(e1))
-                || (currentTime.isAfter(s2) && currentTime.isBefore(e2))
-                || (currentTime.isAfter(s3) && currentTime.isBefore(e3))
-                || currentTime.equals(s1) || currentTime.equals(e1)
-                || currentTime.equals(s2) || currentTime.equals(e2)
-                || currentTime.equals(s3) || currentTime.equals(e3);
+        return (currentTime.isAfter(s1) && currentTime.isBefore(e1)) ||
+                (currentTime.isAfter(s2) && currentTime.isBefore(e2)) ||
+                (currentTime.isAfter(s3) && currentTime.isBefore(e3)) ||
+                currentTime.equals(s1) || currentTime.equals(e1) || currentTime.equals(s2) ||
+                currentTime.equals(e2) || currentTime.equals(s3) || currentTime.equals(e3);
     }
 
-    // COMPLETED: CRIO_TASK_MODULE_MULTITHREADING: Implement multi-threaded version of
-    // RestaurantSearch.
+    // Implement multi-threaded version of RestaurantSearch.
     // Implement variant of findRestaurantsBySearchQuery which is at least 1.5x time faster than
     // findRestaurantsBySearchQuery.
 
@@ -187,24 +187,45 @@ public class RestaurantServiceImpl implements RestaurantService {
         if (isPeekHour(currentTime)) {
             servingRadiusInKms = peakHoursServingRadiusInKms;
         }
+        final Double finalServingRadiusInKms = servingRadiusInKms;
 
         // Restaurants by Name
-        restaurants.addAll(restaurantRepositoryService.findRestaurantsByName(latitude, longitude,
-                searchQuery, currentTime, servingRadiusInKms));
+        CompletableFuture<List<Restaurant>> completableFuture1 =
+                getRestaurantsByName(currentTime, latitude, longitude, searchQuery,
+                        finalServingRadiusInKms);
 
         // Restaurants by Cuisines (Attributes)
-        restaurants.addAll(restaurantRepositoryService.findRestaurantsByAttributes(latitude,
-                longitude, searchQuery, currentTime, servingRadiusInKms));
+        CompletableFuture<List<Restaurant>> completableFuture2 =
+                getRestaurantsByAttributes(currentTime, latitude, longitude, searchQuery,
+                        finalServingRadiusInKms);
 
         // Restaurants by Food Item
-        restaurants.addAll(restaurantRepositoryService.findRestaurantsByItemName(latitude,
-                longitude, searchQuery, currentTime, servingRadiusInKms));
+        CompletableFuture<List<Restaurant>> completableFuture3 =
+                getRestaurantsByItemName(currentTime, latitude, longitude, searchQuery,
+                        finalServingRadiusInKms);
 
         // Restaurants by Food Item Attributes
-        restaurants.addAll(restaurantRepositoryService.findRestaurantsByItemAttributes(latitude,
-                longitude, searchQuery, currentTime, servingRadiusInKms));
+        CompletableFuture<List<Restaurant>> completableFuture4 =
+                getRestaurantsByItemAttributes(currentTime, latitude, longitude, searchQuery,
+                        finalServingRadiusInKms);
+
+        CompletableFuture.allOf(completableFuture1, completableFuture2,
+                completableFuture3, completableFuture4);
+
+        try {
+            restaurants.addAll(completableFuture1.get());
+            restaurants.addAll(completableFuture2.get());
+            restaurants.addAll(completableFuture3.get());
+            restaurants.addAll(completableFuture4.get());
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        for (Restaurant res : restaurants) {
+            String sanitizedName = res.getName().replaceAll("[Â©éí]", "e");
+            res.setName(sanitizedName);
+        }
         return new GetRestaurantsResponse(restaurants);
     }
 
 }
-

@@ -51,6 +51,9 @@ public class RestaurantController {
 
         if (getRestaurantsRequest.getSearchFor() != null) {
             getRestaurantsResponse = restaurantService.findRestaurantsBySearchQuery(getRestaurantsRequest, LocalTime.now());
+            // For multi-threading use below method
+//            getRestaurantsResponse = restaurantService.findRestaurantsBySearchQueryMt(getRestaurantsRequest, LocalTime.now());
+
         } else {
             getRestaurantsResponse = restaurantService.findAllRestaurantsCloseBy(getRestaurantsRequest, LocalTime.now());
         }
